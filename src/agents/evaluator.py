@@ -73,9 +73,9 @@ Respond ONLY with valid JSON array in this exact format (one object per job):
                 response.raise_for_status()
                 result = response.json()
 
-                content = result.get("choices", [{}])[0].get("message", {}).get("content", "")
+                content = result.get("choices", [{}])[0].get("message", {}).get("content", "").strip()
                 if not content:
-                    raise ValueError("Empty response content")
+                    return None
                 return json.loads(content)
 
             except requests.HTTPError as e:
