@@ -43,8 +43,16 @@ def main():
     
     print("  uv found!")
     
-    # Install dependencies
-    print("\n[1/2] Installing dependencies...")
+    needs_init = not os.path.exists(".venv") or not os.path.exists("pyproject.toml")
+    
+    if needs_init:
+        print("\n[1/2] Initializing project...")
+        result = subprocess.run(["uv", "init"], shell=True, capture_output=True, text=True)
+        if result.returncode != 0 and "already exists" not in result.stderr:
+            print(f"Warning: {result.stderr}")
+        print("  Project initialized!")
+    
+    print("\n[2/2] Installing dependencies...")
     result = subprocess.run(["uv", "sync"], shell=True, capture_output=True, text=True)
     if result.returncode != 0:
         print(f"Error: {result.stderr}")

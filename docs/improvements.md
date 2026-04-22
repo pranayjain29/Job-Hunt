@@ -13,6 +13,11 @@
 - Fixed: `.env` not loaded when running `main.py` directly
 - Fixed: Better error message when dependencies not installed (prompts to run setup)
 
+## Completed in v0.2.2
+
+- Updated setup.py: Conditional `uv init` + `uv sync` (for users cloning repo)
+- Better first-time setup flow
+
 ---
 
 ## Top 5 Future Improvements

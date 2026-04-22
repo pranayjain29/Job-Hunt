@@ -47,7 +47,8 @@ python setup.py
 
 The setup script will:
 - Auto-install uv if not found
-- Install all dependencies
+- Run `uv init` if needed (fresh clone)
+- Run `uv sync` to create venv and install dependencies
 - Install Playwright browser
 - Create .env file from template
 
