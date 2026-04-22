@@ -62,13 +62,31 @@ Respond ONLY with valid JSON array in this exact format (one object per job):
                     json=payload,
                     timeout=120
                 )
+
+                if response.status_code == 401:
+                    raise requests.HTTPError("401 unauthorized - check API key")
+                elif response.status_code == 429:
+                    raise requests.HTTPError("429 rate limited - too many requests")
+                elif response.status_code >= 500:
+                    raise requests.HTTPError(f"{response.status_code} server error")
+
                 response.raise_for_status()
                 result = response.json()
 
                 content = result.get("choices", [{}])[0].get("message", {}).get("content", "")
+                if not content:
+                    raise ValueError("Empty response content")
                 return json.loads(content)
 
-            except (requests.RequestException, json.JSONDecodeError, KeyError) as e:
+            except requests.HTTPError as e:
+                print(f"  API error (attempt {attempt + 1}/{self.max_retries}): {e}")
+                if attempt < self.max_retries - 1:
+                    print(f"  Retrying in {self.retry_delay} seconds...")
+                    time.sleep(self.retry_delay)
+                else:
+                    print(f"  Failed after {self.max_retries} attempts")
+                    return None
+            except (json.JSONDecodeError, KeyError, ValueError) as e:
                 print(f"  API error (attempt {attempt + 1}/{self.max_retries}): {e}")
                 if attempt < self.max_retries - 1:
                     print(f"  Retrying in {self.retry_delay} seconds...")
