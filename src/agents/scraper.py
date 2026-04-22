@@ -157,8 +157,11 @@ async def scrape() -> List[JobPosting]:
 
 class NaukriScraperRunner:
     @staticmethod
+    async def run_async() -> List[JobPosting]:
+        return await scrape()
+    
+    @staticmethod
     def run() -> List[JobPosting]:
-        import asyncio
         return asyncio.run(scrape())
 
 

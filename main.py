@@ -138,10 +138,10 @@ OPENROUTER_BASE_URL=https://openrouter.ai/api/v1
     print("Settings saved!")
     return load_settings()
 
-def run_scraper():
+async def run_scraper():
     from src.agents.scraper import NaukriScraperRunner
     print("\n[Starting scraper...]")
-    jobs = NaukriScraperRunner.run()
+    jobs = await NaukriScraperRunner.run_async()
     print(f"Scraped {len(jobs)} jobs")
     return jobs
 
@@ -202,7 +202,7 @@ async def run_workflow(auto_confirm=False):
         print("\n[Auto-confirming settings...]")
     
     print("\n--- SCRAPING ---")
-    jobs = run_scraper()
+    jobs = await run_scraper()
     if not jobs:
         print("No jobs found!")
         return
@@ -219,7 +219,7 @@ async def run_workflow(auto_confirm=False):
 
 async def cmd_scrape():
     print_banner()
-    jobs = run_scraper()
+    jobs = await run_scraper()
     if not jobs:
         print("No jobs scraped!")
         return
