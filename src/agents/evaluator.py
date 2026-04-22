@@ -74,8 +74,15 @@ Respond ONLY with valid JSON array in this exact format (one object per job):
                 result = response.json()
 
                 content = result.get("choices", [{}])[0].get("message", {}).get("content", "").strip()
+                
                 if not content:
                     raise ValueError("Empty response - API returned no content")
+                
+                if content.startswith("```json"):
+                    content = content.replace("```json", "").replace("```", "").strip()
+                elif content.startswith("```"):
+                    content = content.replace("```", "").strip()
+                
                 return json.loads(content)
 
             except requests.HTTPError as e:
