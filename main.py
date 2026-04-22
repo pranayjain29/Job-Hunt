@@ -145,13 +145,13 @@ def run_scraper():
     print(f"Scraped {len(jobs)} jobs")
     return jobs
 
-def run_evaluator(jobs):
+async def run_evaluator(jobs):
     from src.agents.evaluator import EvaluatorAgent
     from src.config import MIN_SCORE_THRESHOLD
     
     print("\n[Evaluating jobs with AI...]")
     evaluator = EvaluatorAgent()
-    quality_jobs = evaluator.filter_quality_jobs(jobs, min_score=MIN_SCORE_THRESHOLD)
+    quality_jobs = await evaluator.filter_quality_jobs(jobs, min_score=MIN_SCORE_THRESHOLD)
     print(f"Found {len(quality_jobs)} quality jobs (score >= {MIN_SCORE_THRESHOLD})")
     return quality_jobs
 
@@ -207,7 +207,7 @@ def run_workflow(auto_confirm=False):
         print("No jobs found!")
         return
     
-    quality_jobs = run_evaluator(jobs)
+    quality_jobs = await run_evaluator(jobs)
     if not quality_jobs:
         print("No quality jobs found!")
         return
@@ -224,7 +224,7 @@ def cmd_scrape():
         print("No jobs scraped!")
         return
     
-    quality_jobs = run_evaluator(jobs)
+    quality_jobs = await run_evaluator(jobs)
     if not quality_jobs:
         print("No quality jobs found!")
         return
@@ -233,7 +233,7 @@ def cmd_scrape():
     show_summary(saved_jobs)
     print("\nScrape complete!")
 
-def cmd_evaluate():
+async def cmd_evaluate():
     from src.agents.data_engineer import DataEngineerAgent
     from src.config import MIN_SCORE_THRESHOLD
     
@@ -249,7 +249,7 @@ def cmd_evaluate():
         print(f"Already scored: {len(already_scored)} jobs")
     if unscored:
         print(f"Found {len(unscored)} unscored jobs")
-        quality_jobs = run_evaluator(unscored)
+        quality_jobs = await run_evaluator(unscored)
         if not quality_jobs:
             print("No quality jobs found!")
             return
@@ -289,11 +289,14 @@ def main():
         return
     
     if args.command == "run":
-        run_workflow(auto_confirm=args.yes)
+        import asyncio
+        asyncio.run(run_workflow(auto_confirm=args.yes))
     elif args.command == "scrape":
-        cmd_scrape()
+        import asyncio
+        asyncio.run(cmd_scrape())
     elif args.command == "evaluate":
-        cmd_evaluate()
+        import asyncio
+        asyncio.run(cmd_evaluate())
     elif args.command == "dashboard":
         cmd_dashboard()
 
