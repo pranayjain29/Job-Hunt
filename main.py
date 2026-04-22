@@ -174,7 +174,7 @@ def show_summary(jobs):
     if len(jobs) > 10:
         print(f"... and {len(jobs) - 10} more")
 
-def run_workflow():
+def run_workflow(auto_confirm=False):
     print_banner()
     
     settings = verify_config()
@@ -183,20 +183,23 @@ def run_workflow():
     
     show_settings(settings)
     
-    while True:
-        print()
-        choice = input("Use these settings? [y]es / [e]dit / [q]uit: ").strip().lower()
-        
-        if choice in ("", "y", "yes"):
-            break
-        elif choice in ("e", "edit"):
-            settings = edit_settings(settings)
-            show_settings(settings)
-        elif choice in ("q", "quit"):
-            print("bye!")
-            return
-        else:
-            print("Invalid. Enter y, e, or q")
+    if not auto_confirm:
+        while True:
+            print()
+            choice = input("Use these settings? [y]es / [e]dit / [q]uit: ").strip().lower()
+            
+            if choice in ("", "y", "yes"):
+                break
+            elif choice in ("e", "edit"):
+                settings = edit_settings(settings)
+                show_settings(settings)
+            elif choice in ("q", "quit"):
+                print("bye!")
+                return
+            else:
+                print("Invalid. Enter y, e, or q")
+    else:
+        print("\n[Auto-confirming settings...]")
     
     print("\n--- SCRAPING ---")
     jobs = run_scraper()
@@ -265,6 +268,7 @@ def main():
     # Parse args first to check for help
     parser = argparse.ArgumentParser(description="Job Hunt 2", add_help=False)
     parser.add_argument("command", choices=["run", "scrape", "evaluate", "dashboard"], default="run", nargs="?")
+    parser.add_argument("-y", "--yes", action="store_true", help="Auto-confirm settings")
     args, _ = parser.parse_known_args()
     
     # Show help without checking prerequisites
@@ -285,7 +289,7 @@ def main():
         return
     
     if args.command == "run":
-        run_workflow()
+        run_workflow(auto_confirm=args.yes)
     elif args.command == "scrape":
         cmd_scrape()
     elif args.command == "evaluate":
