@@ -80,6 +80,7 @@ Respond ONLY with valid JSON array in this exact format (one object per job):
 
             except requests.HTTPError as e:
                 print(f"  API error (attempt {attempt + 1}/{self.max_retries}): {e}")
+                print(f"    Status: {response.status_code}, Body: {response.text[:200]}")
                 if attempt < self.max_retries - 1:
                     print(f"  Retrying in {self.retry_delay} seconds...")
                     time.sleep(self.retry_delay)
@@ -88,6 +89,8 @@ Respond ONLY with valid JSON array in this exact format (one object per job):
                     return None
             except (json.JSONDecodeError, KeyError, ValueError) as e:
                 print(f"  API error (attempt {attempt + 1}/{self.max_retries}): {e}")
+                body = response.text[:500] if response.text else "EMPTY"
+                print(f"    Status: {response.status_code}, Body: {body}")
                 if attempt < self.max_retries - 1:
                     print(f"  Retrying in {self.retry_delay} seconds...")
                     time.sleep(self.retry_delay)
