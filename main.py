@@ -174,7 +174,7 @@ def show_summary(jobs):
     if len(jobs) > 10:
         print(f"... and {len(jobs) - 10} more")
 
-def run_workflow(auto_confirm=False):
+async def run_workflow(auto_confirm=False):
     print_banner()
     
     settings = verify_config()
@@ -217,7 +217,7 @@ def run_workflow(auto_confirm=False):
     print("\n")
     open_dashboard()
 
-def cmd_scrape():
+async def cmd_scrape():
     print_banner()
     jobs = run_scraper()
     if not jobs:
