@@ -18,6 +18,18 @@
 - Updated setup.py: Conditional `uv init` + `uv sync` (for users cloning repo)
 - Better first-time setup flow
 
+## Completed in v0.3.0
+
+- Async evaluator with litellm (4 concurrent batches)
+- Pass skills to prompt for better scoring
+- Added evaluate command
+- Async scraper to avoid nested event loop
+
+## Planned in v0.3.1
+
+- Concurrent scraper (3-4 parallel browser instances)
+- Parallel scraping = 3-4x faster job collection
+
 ---
 
 ## Top 5 Future Improvements
@@ -86,11 +98,12 @@
 
 | Priority | Feature | Impact | Effort |
 |----------|---------|--------|--------|
-| 1 | More Job Boards | High | Medium |
-| 2 | Scheduling | Medium | Low |
-| 3 | Skills Analysis | Medium | Medium |
-| 4 | Interview Prep | High | Medium |
-| 5 | SQLite | Low | Low |
+| 1 | Concurrent Scraper (3-4 browsers) | High | Medium |
+| 2 | More Job Boards | High | Medium |
+| 3 | Scheduling | Medium | Low |
+| 4 | Skills Analysis | Medium | Medium |
+| 5 | Interview Prep | High | Medium |
+| 6 | SQLite | Low | Low |
 
 ---
 
