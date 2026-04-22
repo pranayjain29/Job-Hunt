@@ -1,6 +1,6 @@
-# Job Hunt 2 - v1.0 Ready
+# Job Hunt 2 - v0.3.0
 
-## Version: 1.0 (Production Ready)
+## Version: 0.3.0
 
 ---
 
@@ -12,7 +12,7 @@
 | CLI | ✓ | Interactive yes/edit/quit |
 | Config | ✓ | .env file |
 | Scraper | ✓ | Naukri + visible browser |
-| Evaluator | ✓ | OpenRouter + retry logic |
+| Evaluator | ✓ | Async, 4 concurrent batches |
 | Data Engineer | ✓ | Excel + deduplication |
 | Dashboard | ✓ | Streamlit + threshold |
 
@@ -21,12 +21,16 @@
 ## Key Features
 
 - [x] Resume-aware job scoring
+- [x] Skills passed to prompt (better scoring)
+- [x] Async evaluator (4 concurrent batches)
 - [x] Batch AI processing (10 jobs/call)
 - [x] Retry on API failure (3 attempts)
 - [x] Deduplication by URL
 - [x] Configurable score threshold
 - [x] Visible browser mode
 - [x] Interactive dashboard
+- [x] `-y` auto-confirm flag
+- [x] Separate evaluate command
 
 ---
 
@@ -35,7 +39,7 @@
 ```
 setup.py              # First time setup
 main.py             # CLI entry
-.env               # Your config (empty)
+.env               # Your config
 .env.example        # Template
 src/
 │   ├── config.py
@@ -55,12 +59,13 @@ docs/
 ```bash
 # New user
 python setup.py
-uv run python main.py run
+uv run main.py run -y
 
 # Existing user
-uv run python main.py run
-uv run python main.py scrape
-uv run python main.py dashboard
+uv run main.py run -y
+uv run main.py scrape
+uv run main.py evaluate
+uv run main.py dashboard
 ```
 
 Dashboard: http://localhost:8501
@@ -73,10 +78,10 @@ Dashboard: http://localhost:8501
 |------|--------|
 | Setup | ✓ Pass |
 | Config load | ✓ Pass |
-| Scrape | ✓ Pass (44 jobs) |
-| Evaluator import | ✓ Pass |
+| Scrape | ✓ Pass |
+| Evaluator | ✓ Pass (async, 4 concurrent) |
 | Dashboard | ✓ Pass |
 
 ---
 
-## v1.0 Ready - Git Push!
+## v0.3.0 Ready

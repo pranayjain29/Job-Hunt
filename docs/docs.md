@@ -82,7 +82,7 @@ The app will:
 | Command | What It Does |
 |---------|-------------|
 | `python setup.py` | First time setup (auto-installs uv) |
-| `uv run main.py run` | Full workflow (scrape + score + dashboard) |
+| `uv run main.py run -y` | Full workflow (scrape + score + dashboard) |
 | `uv run main.py scrape` | Scrape jobs + score + save |
 | `uv run main.py evaluate` | Score existing unscored jobs |
 | `uv run main.py dashboard` | Open dashboard only |
