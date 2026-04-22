@@ -75,7 +75,7 @@ Respond ONLY with valid JSON array in this exact format (one object per job):
 
                 content = result.get("choices", [{}])[0].get("message", {}).get("content", "").strip()
                 if not content:
-                    return None
+                    raise ValueError("Empty response - API returned no content")
                 return json.loads(content)
 
             except requests.HTTPError as e:
@@ -102,6 +102,7 @@ Respond ONLY with valid JSON array in this exact format (one object per job):
 
     def evaluate_jobs(self, jobs: List[JobPosting]) -> List[JobPosting]:
         total_batches = (len(jobs) + self.batch_size - 1) // self.batch_size
+        failed_batches = []
         print(f"Evaluating {len(jobs)} jobs in {total_batches} batches...")
 
         for batch_idx in range(total_batches):
@@ -121,8 +122,12 @@ Respond ONLY with valid JSON array in this exact format (one object per job):
                         batch[idx].score = r.get("score", 50)
                         batch[idx].skills = r.get("skills", [])
             else:
-                for job in batch:
-                    job.score = 50
+                print("  FAILED - could not evaluate this batch")
+                failed_batches.append(batch_idx + 1)
+
+        if failed_batches:
+            print(f"\nWARNING: Failed to evaluate {len(failed_batches)} batch(es): {failed_batches}")
+            print("Re-run the evaluate command to retry failed batches.")
 
         return jobs
 
