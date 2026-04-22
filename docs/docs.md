@@ -83,7 +83,8 @@ The app will:
 |---------|-------------|
 | `python setup.py` | First time setup (auto-installs uv) |
 | `uv run main.py run` | Full workflow (scrape + score + dashboard) |
-| `uv run main.py scrape` | Scrape jobs only |
+| `uv run main.py scrape` | Scrape jobs + score + save |
+| `uv run main.py evaluate` | Score existing unscored jobs |
 | `uv run main.py dashboard` | Open dashboard only |
 
 If you run `main.py` without dependencies, it will prompt you to run `setup.py` first.

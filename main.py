@@ -217,9 +217,44 @@ def run_workflow():
 def cmd_scrape():
     print_banner()
     jobs = run_scraper()
-    if jobs:
-        save_jobs(jobs)
+    if not jobs:
+        print("No jobs scraped!")
+        return
+    
+    quality_jobs = run_evaluator(jobs)
+    if not quality_jobs:
+        print("No quality jobs found!")
+        return
+    
+    saved_jobs = save_jobs(quality_jobs)
+    show_summary(saved_jobs)
     print("\nScrape complete!")
+
+def cmd_evaluate():
+    from src.agents.data_engineer import DataEngineerAgent
+    from src.config import MIN_SCORE_THRESHOLD
+    
+    print_banner()
+    
+    agent = DataEngineerAgent()
+    all_jobs = agent.load_existing_jobs()
+    
+    unscored = [j for j in all_jobs if j.score is None]
+    already_scored = [j for j in all_jobs if j.score is not None]
+    
+    if already_scored:
+        print(f"Already scored: {len(already_scored)} jobs")
+    if unscored:
+        print(f"Found {len(unscored)} unscored jobs")
+        quality_jobs = run_evaluator(unscored)
+        if not quality_jobs:
+            print("No quality jobs found!")
+            return
+        saved_jobs = save_jobs(quality_jobs)
+        show_summary(saved_jobs)
+        print("\nEvaluate complete!")
+    else:
+        print("No unscored jobs to evaluate!")
 
 def cmd_dashboard():
     open_dashboard()
@@ -229,7 +264,7 @@ def main():
     
     # Parse args first to check for help
     parser = argparse.ArgumentParser(description="Job Hunt 2", add_help=False)
-    parser.add_argument("command", choices=["run", "scrape", "dashboard"], default="run", nargs="?")
+    parser.add_argument("command", choices=["run", "scrape", "evaluate", "dashboard"], default="run", nargs="?")
     args, _ = parser.parse_known_args()
     
     # Show help without checking prerequisites
@@ -253,6 +288,8 @@ def main():
         run_workflow()
     elif args.command == "scrape":
         cmd_scrape()
+    elif args.command == "evaluate":
+        cmd_evaluate()
     elif args.command == "dashboard":
         cmd_dashboard()
 
