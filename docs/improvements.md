@@ -25,10 +25,11 @@
 - Added evaluate command
 - Async scraper to avoid nested event loop
 
-## Planned in v0.3.1
+## Completed in v0.3.1
 
-- Concurrent scraper (3-4 parallel browser instances)
-- Parallel scraping = 3-4x faster job collection
+- Concurrent scraper (3 parallel browsers)
+- Skills wordcloud in dashboard
+- Skills gap analysis in dashboard
 
 ---
 
@@ -98,12 +99,10 @@
 
 | Priority | Feature | Impact | Effort |
 |----------|---------|--------|--------|
-| 1 | Concurrent Scraper (3-4 browsers) | High | Medium |
-| 2 | More Job Boards | High | Medium |
-| 3 | Scheduling | Medium | Low |
-| 4 | Skills Analysis | Medium | Medium |
-| 5 | Interview Prep | High | Medium |
-| 6 | SQLite | Low | Low |
+| 1 | More Job Boards | High | Medium |
+| 2 | Scheduling | Medium | Low |
+| 3 | Interview Prep | High | Medium |
+| 4 | SQLite | Low | Low |
 
 ---
 

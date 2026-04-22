@@ -123,7 +123,7 @@ Open http://localhost:8501 after running
 
 - **All Jobs** - Table with scores, companies, links
 - **By Status** - Filter by New/Applied/Interviewing
-- **Statistics** - Charts of companies, locations
+- **Statistics** - Charts + skills wordcloud + skills gap analysis
 - **Analytics** - Funnel, conversion rates
 
 ### Sidebar Settings:

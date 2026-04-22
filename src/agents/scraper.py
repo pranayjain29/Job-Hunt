@@ -3,6 +3,7 @@ from typing import List, Optional
 from datetime import datetime
 import uuid
 import re
+import asyncio
 
 from ..config import TARGET_ROLES, LOCATIONS, EXPERIENCE_RANGE
 from ..models import JobPosting
@@ -138,14 +139,37 @@ class NaukriScraper:
 
         return jobs
 
-    async def scrape_all(self) -> List[JobPosting]:
+    async def scrape_all(self, num_browsers: int = 3) -> List[JobPosting]:
         all_jobs = []
-
+        
+        tasks = []
         for role in TARGET_ROLES:
             for location in LOCATIONS:
-                jobs = await self.scrape_role(role, location)
-                all_jobs.extend(jobs)
-                print(f"Collected {len(jobs)} jobs for {role} in {location}")
+                tasks.append((role, location))
+        
+        chunk_size = (len(tasks) + num_browsers - 1) // num_browsers
+        chunks = [tasks[i:i+chunk_size] for i in range(0, len(tasks), chunk_size)]
+        
+        print(f"Starting {num_browsers} browsers in parallel...")
+        
+        async def scrape_chunk(browser_id: int, chunk: list) -> List[JobPosting]:
+            chunk_jobs = []
+            async with NaukriScraper() as scraper:
+                for role, location in chunk:
+                    jobs = await scraper.scrape_role(role, location)
+                    chunk_jobs.extend(jobs)
+                    print(f"Browser {browser_id}: {len(jobs)} jobs for {role} in {location}")
+            return chunk_jobs
+        
+        browser_tasks = [
+            scrape_chunk(i+1, chunks[i]) 
+            for i in range(min(num_browsers, len(chunks)))
+        ]
+        
+        results = await asyncio.gather(*browser_tasks)
+        
+        for result in results:
+            all_jobs.extend(result)
 
         return all_jobs
 

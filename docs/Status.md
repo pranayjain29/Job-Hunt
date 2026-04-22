@@ -1,6 +1,6 @@
-# Job Hunt 2 - v0.3.0
+# Job Hunt 2 - v0.3.1
 
-## Version: 0.3.0
+## Version: 0.3.1
 
 ---
 
@@ -11,10 +11,10 @@
 | Setup Script | ✓ | Installs uv, deps, playwright |
 | CLI | ✓ | Interactive yes/edit/quit |
 | Config | ✓ | .env file |
-| Scraper | ✓ | Naukri + visible browser |
+| Scraper | ✓ | 3 parallel browsers |
 | Evaluator | ✓ | Async, 4 concurrent batches |
 | Data Engineer | ✓ | Excel + deduplication |
-| Dashboard | ✓ | Streamlit + threshold |
+| Dashboard | ✓ | Wordcloud + skills gap |
 
 ---
 
@@ -22,8 +22,11 @@
 
 - [x] Resume-aware job scoring
 - [x] Skills passed to prompt (better scoring)
+- [x] Concurrent scraper (3 parallel browsers)
 - [x] Async evaluator (4 concurrent batches)
 - [x] Batch AI processing (10 jobs/call)
+- [x] Skills wordcloud visualization
+- [x] Skills gap analysis
 - [x] Retry on API failure (3 attempts)
 - [x] Deduplication by URL
 - [x] Configurable score threshold
@@ -68,7 +71,7 @@ uv run main.py evaluate
 uv run main.py dashboard
 ```
 
-Dashboard: http://localhost:8501
+Dashboard: http://localhost:8501 (Statistics tab for wordcloud & skills gap)
 
 ---
 
@@ -81,7 +84,9 @@ Dashboard: http://localhost:8501
 | Scrape | ✓ Pass |
 | Evaluator | ✓ Pass (async, 4 concurrent) |
 | Dashboard | ✓ Pass |
+| Wordcloud | ✓ Pass |
+| Skills Gap | ✓ Pass |
 
 ---
 
-## v0.3.0 Ready
+## v0.3.1 Ready

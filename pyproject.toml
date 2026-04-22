@@ -16,4 +16,5 @@ dependencies = [
     "requests>=2.31.0",
     "rich>=13.7.0",
     "PyPDF2>=3.0.0",
+    "wordcloud>=1.9.0",
 ]

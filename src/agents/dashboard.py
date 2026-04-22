@@ -2,10 +2,13 @@ import streamlit as st
 import pandas as pd
 import sys
 from pathlib import Path
+from wordcloud import WordCloud
+import matplotlib.pyplot as plt
+from collections import Counter
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from src.config import DATA_FILE, MIN_SCORE_THRESHOLD
+from src.config import DATA_FILE, MIN_SCORE_THRESHOLD, RESUME_CONTEXT
 from src.models import JobPosting, ApplicationStatus
 from src.agents.data_engineer import DataEngineerAgent
 
@@ -285,6 +288,73 @@ class DashboardAgent:
                 if not df.empty:
                     location_counts = df["Location"].value_counts()
                     st.bar_chart(location_counts, color="#8b5cf6")
+            
+            st.markdown("---")
+            st.markdown("### ☁️ Skills Wordcloud")
+            
+            jobs = self.data_agent.load_existing_jobs()
+            all_skills = []
+            for job in jobs:
+                if job.skills:
+                    all_skills.extend(job.skills)
+            
+            if all_skills:
+                skill_counts = Counter(all_skills)
+                skill_text = " ".join([skill for skill, count in skill_counts.items() for _ in range(count)])
+                
+                wordcloud = WordCloud(
+                    width=800, height=400,
+                    background_color='white',
+                    colormap='viridis',
+                    max_words=50,
+                    min_font_size=10
+                ).generate(skill_text)
+                
+                fig, ax = plt.subplots(figsize=(12, 5))
+                ax.imshow(wordcloud, interpolation='bilinear')
+                ax.axis('off')
+                st.pyplot(fig)
+                
+                st.markdown("### 🔍 Skills Gap Analysis")
+                
+                resume_skills = set()
+                if RESUME_CONTEXT:
+                    common_skills = ['python', 'sql', 'excel', 'tableau', 'power bi', 'data analysis', 'machine learning', 
+                                   'deep learning', 'tensorflow', 'pytorch', 'pandas', 'numpy', 'statistics', 'ai', 'ml',
+                                   'nlp', 'computer vision', ' ETL', 'aws', 'gcp', 'azure', 'docker', 'kubernetes',
+                                   'linux', 'programming', 'communication', 'presentation']
+                    resume_lower = RESUME_CONTEXT.lower()
+                    for skill in common_skills:
+                        if skill in resume_lower:
+                            resume_skills.add(skill)
+                
+                job_skills = set(skill.lower() for skill in skill_counts.keys())
+                
+                skills_in_demand = job_skills
+                skills_you_have = resume_skills & job_skills
+                skill_gaps = job_skills - resume_skills
+                
+                col_gap1, col_gap2 = st.columns(2)
+                
+                with col_gap1:
+                    st.markdown("#### ✅ Skills You Have (In Demand)")
+                    if skills_you_have:
+                        for skill in sorted(skills_you_have):
+                            st.markdown(f"- **{skill}** ✓")
+                    else:
+                        st.info("No matching skills found")
+                
+                with col_gap2:
+                    st.markdown("#### ❌ Skills Gaps (In Demand but Missing)")
+                    if skill_gaps:
+                        top_gaps = sorted(skill_gaps, key=lambda x: skill_counts.get(x, 0), reverse=True)[:15]
+                        for skill in top_gaps:
+                            count = skill_counts.get(skill, 0)
+                            st.markdown(f"- **{skill}** ({count} jobs)")
+                    else:
+                        st.success("No skill gaps found!")
+            else:
+                st.info("No skills data available. Run evaluator first.")
 
         with tabs[3]:
             self._render_funnel(df)
