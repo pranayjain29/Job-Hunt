@@ -121,6 +121,7 @@ Respond ONLY with valid JSON array in this exact format (one object per job):
                     if 0 <= idx < len(batch):
                         batch[idx].score = r.get("score", 50)
                         batch[idx].skills = r.get("skills", [])
+                print(f"  Evaluated {len(results)} jobs")
             else:
                 print("  FAILED - could not evaluate this batch")
                 failed_batches.append(batch_idx + 1)
